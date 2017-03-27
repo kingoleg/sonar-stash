@@ -19,7 +19,7 @@ public final class CoverageUtils {
             return 100;
         }
 
-        return (1 - (((double) uncoveredLines) / linesToCover)) * 100;
+		return (1 - (double) uncoveredLines / linesToCover) * 100;
     }
 
     public static Sonar createSonarClient(StashPluginConfiguration config) {
@@ -34,16 +34,17 @@ public final class CoverageUtils {
     }
 
     public static Double getLineCoverage(Sonar client, String component) {
-        Resource resource = null;
         try {
-            resource = client.find(ResourceQuery.createForMetrics(component, CoreMetrics.LINE_COVERAGE_KEY));
+			Resource resource = client.find(ResourceQuery.createForMetrics(component, CoreMetrics.LINE_COVERAGE_KEY));
+			LOGGER.debug("Previous coverage resource {} for component {}", resource, component);
+
+			if (resource != null) {
+				return resource.getMeasureValue(CoreMetrics.LINE_COVERAGE_KEY);
+			}
         } catch (HttpException e) {
             LOGGER.error("Could not fetch previous coverage for component {}", component, e);
         }
-        if (resource == null) {
-            return null;
-        } else {
-            return resource.getMeasureValue(CoreMetrics.LINE_COVERAGE_KEY);
-        }
+
+		return null;
     }
 }
