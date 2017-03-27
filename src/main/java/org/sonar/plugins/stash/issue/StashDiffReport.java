@@ -37,30 +37,19 @@ public class StashDiffReport {
     }
 
     public String getType(String path, long destination) {
-        String result = null;
-        Boolean foundIt = false;
-
         for (StashDiff diff : diffs) {
             // Line 0 never belongs to Stash Diff view.
             // It is a global comment with a type set to CONTEXT.
-            if (StringUtils.equals(diff.getPath(), path) && (destination == 0)) {
-                result = StashPlugin.CONTEXT_ISSUE_TYPE;
-                foundIt = true;
-            } else {
-
-                if (StringUtils.equals(diff.getPath(), path) && (diff.getDestination() == destination)) {
-                    result = diff.getType();
-                    foundIt = true;
-                }
+            if (StringUtils.equals(diff.getPath(), path) && destination == 0) {
+                return StashPlugin.CONTEXT_ISSUE_TYPE;
             }
 
-            // Centralizing the loop shortcut (squid:S135)
-            if (foundIt) {
-                break;
+            if (StringUtils.equals(diff.getPath(), path) && diff.getDestination() == destination) {
+                return diff.getType();
             }
         }
 
-        return result;
+        return null;
     }
 
     /**
