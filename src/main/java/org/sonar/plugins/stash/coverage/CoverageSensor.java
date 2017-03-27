@@ -33,6 +33,8 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CoverageSensor.class);
 
+	private static final double COVERAGE_THRESHOLD = 85;
+
     private final FileSystem fileSystem;
     private final ResourcePerspectives perspectives;
     private final StashPluginConfiguration config;
@@ -114,6 +116,10 @@ public class CoverageSensor implements Sensor, BatchComponent {
 		if (roundedPercentageGreaterThan(previousCoverage, coverage)) {
 			LOGGER.debug("Previous coverage is better then current");
 			return true;
+		}
+
+		if (roundedPercentageGreaterThan(coverage, COVERAGE_THRESHOLD)) {
+			LOGGER.debug("Current coverage {} is more then {}%", coverage, COVERAGE_THRESHOLD);
 		}
 
 		LOGGER.debug("Coverage is not OK");
