@@ -42,6 +42,7 @@ public class StashRequestFacade implements BatchComponent, IssuePathResolver {
   private File workingDir;
   private final InputFileCache inputFileCache;
   private CoverageProjectStore coverageProjectStore;
+  private PathResolver pathResolver = new PathResolver();
 
   public StashRequestFacade(StashPluginConfiguration stashPluginConfiguration, InputFileCache inputFileCache, StashProjectBuilder projectBuilder, CoverageProjectStore coverageProjectStore) {
     this.config = stashPluginConfiguration;
@@ -422,6 +423,8 @@ public class StashRequestFacade implements BatchComponent, IssuePathResolver {
       return null;
     }
 
-    return new PathResolver().relativePath(workingDir, inputFile.file());
+    String resolvedRelativePath = pathResolver.relativePath(workingDir, inputFile.file());
+    
+	return resolvedRelativePath;
   }
 }
