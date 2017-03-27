@@ -1,5 +1,13 @@
 package org.sonar.plugins.stash.coverage;
 
+import static org.sonar.plugins.stash.StashPluginUtils.formatPercentage;
+import static org.sonar.plugins.stash.StashPluginUtils.roundedPercentageGreaterThan;
+import static org.sonar.plugins.stash.coverage.CoverageUtils.calculateCoverage;
+import static org.sonar.plugins.stash.coverage.CoverageUtils.createSonarClient;
+import static org.sonar.plugins.stash.coverage.CoverageUtils.getLineCoverage;
+
+import java.text.MessageFormat;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.BatchComponent;
@@ -19,18 +27,11 @@ import org.sonar.api.resources.Resource;
 import org.sonar.plugins.stash.StashPluginConfiguration;
 import org.sonar.wsclient.Sonar;
 
-import java.text.MessageFormat;
-
-import static org.sonar.plugins.stash.StashPluginUtils.formatPercentage;
-import static org.sonar.plugins.stash.StashPluginUtils.roundedPercentageGreaterThan;
-import static org.sonar.plugins.stash.coverage.CoverageUtils.calculateCoverage;
-import static org.sonar.plugins.stash.coverage.CoverageUtils.createSonarClient;
-import static org.sonar.plugins.stash.coverage.CoverageUtils.getLineCoverage;
-
 // We have to execute after all coverage sensors, otherwise we are not able to read their measurements
 @Phase(name = Phase.Name.POST)
 public class CoverageSensor implements Sensor, BatchComponent {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CoverageSensor.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CoverageSensor.class);
 
     private final FileSystem fileSystem;
     private final ResourcePerspectives perspectives;
@@ -52,41 +53,72 @@ public class CoverageSensor implements Sensor, BatchComponent {
         Sonar sonar = createSonarClient(config);
 
         for (InputFile f : fileSystem.inputFiles(fileSystem.predicates().all())) {
+			LOGGER.debug("Getting coverage for {}, status = {}, language = {}, lines = {}, type = {}", f, f.status(),
+					f.language(), f.lines(), f.type());
+
             Integer linesToCover = null;
             Integer uncoveredLines = null;
 
             Resource fileResource = context.getResource(f);
             Measure<Integer> linesToCoverMeasure = context.getMeasure(fileResource, CoreMetrics.LINES_TO_COVER);
-            if (linesToCoverMeasure != null) {
+			LOGGER.debug("Lines to cover measure = {}", linesToCoverMeasure);
+
+			if (linesToCoverMeasure != null) {
                 linesToCover = linesToCoverMeasure.value();
             }
+			LOGGER.debug("Lines to cover = {}", linesToCover);
 
             Measure<Integer> uncoveredLinesMeasure = context.getMeasure(fileResource, CoreMetrics.UNCOVERED_LINES);
-            if (uncoveredLinesMeasure != null) {
+			LOGGER.debug("Uncovered lines measure = {}", uncoveredLinesMeasure);
+
+			if (uncoveredLinesMeasure != null) {
                 uncoveredLines = uncoveredLinesMeasure.value();
             }
+			LOGGER.debug("Uncovered lines measure = {}", uncoveredLines);
 
             // get lines_to_cover, uncovered_lines
-            if ((linesToCover != null) && (uncoveredLines != null)) {
-                Double previousCoverage = getLineCoverage(sonar, fileResource.getEffectiveKey());
+            if (linesToCover != null && uncoveredLines != null) {
+				Double previousLineCoverage = getLineCoverage(sonar, fileResource.getEffectiveKey());
+				if (previousLineCoverage == null) {
+					LOGGER.debug("Previous coverage from sonar is null");
+				}
 
                 double coverage = calculateCoverage(linesToCover, uncoveredLines);
 
                 coverageProjectStore.updateMeasurements(linesToCover, uncoveredLines);
 
-                if (previousCoverage == null) {
-                    continue;
+				double previousCoverage = 0d;
+				if (previousLineCoverage != null) {
+					previousCoverage = previousLineCoverage;
                 }
+
+				LOGGER.debug("Previous coverage is {}", previousCoverage);
+				LOGGER.debug("Current coverage is {}", coverage);
 
                 // The API returns the coverage rounded.
                 // So we can only report anything if the rounded value has changed,
                 // otherwise we could report false positives.
-                if (roundedPercentageGreaterThan(previousCoverage, coverage)) {
+				if (shouldAddIssue(f.status(), previousCoverage, coverage)) {
                     addIssue(f, coverage, previousCoverage);
                 }
             }
         }
     }
+
+	private boolean shouldAddIssue(InputFile.Status status, double previousCoverage, double coverage) {
+		boolean isAddedWithoutTests = previousCoverage == 0 && status == InputFile.Status.ADDED;
+		if (isAddedWithoutTests) {
+			LOGGER.debug("File is added without tests");
+			return true;
+		}
+		if (roundedPercentageGreaterThan(previousCoverage, coverage)) {
+			LOGGER.debug("Previous coverage is better then current");
+			return true;
+		}
+
+		LOGGER.debug("Coverage is not OK");
+		return false;
+	}
 
     private void addIssue(InputFile file, double coverage, double previousCoverage) {
         Issuable issuable = perspectives.as(Issuable.class, file);
@@ -96,11 +128,20 @@ public class CoverageSensor implements Sensor, BatchComponent {
         }
 
         String message = formatIssueMessage(file.relativePath(), coverage, previousCoverage);
+		if (file.status() == InputFile.Status.ADDED) {
+			message += " Forget to add a test for a new added class?";
+		}
+
         Issue issue = issuable.newIssueBuilder()
                 .ruleKey(CoverageRule.decreasingLineCoverageRule(file.language()))
                 .message(message)
                 .build();
         issuable.addIssue(issue);
+
+		LOGGER.debug(
+				"Added {} to issuable, issue.componentKey = {}, issue.actionPlanKey = {}, issue.key = {}, issue.ruleKey = {}, issue.message = {}, issue.line = {}, issue.resolution = {}, issue.attributes = {}",
+				issue, issue.componentKey(), issue.actionPlanKey(), issue.key(), issue.ruleKey(), issue.message(), issue.line(),
+				issue.resolution(), issue.attributes());
     }
 
     static String formatIssueMessage(String path, double coverage, double previousCoverage) {
