@@ -98,4 +98,10 @@ public class StashComment {
     public int hashCode() {
         return (int) this.getId();
     }
+
+    @Override
+    public String toString() {
+        return "StashComment [id=" + id + ", message=" + message + ", author=" + author + ", version=" + version + ", line="
+                + line + ", path=" + path + ", tasks=" + tasks + "]";
+    }
 }

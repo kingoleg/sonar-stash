@@ -362,34 +362,30 @@ public class StashRequestFacade implements BatchComponent, IssuePathResolver {
      */
     public void resetComments(PullRequestRef pr, StashDiffReport diffReport, StashUser sonarUser, StashClient stashClient) {
         try {
-            // Let's call this "diffRep_loop"
             for (StashComment comment : diffReport.getComments()) {
 
-                // delete comment only if published by the current SQ user
                 if (sonarUser.getId() != comment.getAuthor().getId()) {
                     continue;
-                    // Next element in "diffRep_loop"
-
-                    // comment contains tasks which cannot be deleted => do
-                    // nothing
-                } else if (comment.containsPermanentTasks()) {
+                }
+                if (comment.containsPermanentTasks()) {
                     LOGGER.debug(
                             "Comment \"{}\" (path:\"{}\", line:\"{}\")"
                                     + "CANNOT be deleted because one of its tasks is not deletable.",
                             comment.getId(), comment.getPath(), comment.getLine());
-                    continue; // Next element in "diffRep_loop"
+                    continue;
                 }
 
                 // delete tasks linked to the current comment
                 for (StashTask task : comment.getTasks()) {
+                    LOGGER.debug("Remove comment task {}", task);
                     stashClient.deleteTaskOnComment(task);
                 }
 
+                LOGGER.debug("Remove comment {}", comment);
                 stashClient.deletePullRequestComment(pr, comment);
             }
 
             LOGGER.info("SonarQube issues reported to Stash by user \"{}\" have been reset", sonarUser.getName());
-
         } catch (StashClientException e) {
             LOGGER.error("Unable to reset comment list", e);
         }

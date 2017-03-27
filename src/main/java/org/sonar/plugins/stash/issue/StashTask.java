@@ -29,4 +29,9 @@ public class StashTask {
     public boolean isDeletable() {
         return deletable;
     }
+
+    @Override
+    public String toString() {
+        return "StashTask [id=" + id + ", text=" + text + ", state=" + state + ", deletable=" + deletable + "]";
+    }
 }
