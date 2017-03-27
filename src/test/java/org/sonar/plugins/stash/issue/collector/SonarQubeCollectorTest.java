@@ -1,6 +1,7 @@
 package org.sonar.plugins.stash.issue.collector;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,6 +28,7 @@ import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.stash.fixtures.DummyIssuePathResolver;
+import org.sonar.plugins.stash.issue.StashDiffReport;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SonarQubeCollectorTest {
@@ -67,6 +69,9 @@ public class SonarQubeCollectorTest {
     InputFile inputFile2;
 
     DummyIssuePathResolver issuePathResolver;
+
+    @Mock
+    StashDiffReport stashDiffReport;
 
     @Before
     public void setUp() throws Exception {
@@ -140,7 +145,7 @@ public class SonarQubeCollectorTest {
         ArrayList<Issue> issues = new ArrayList<Issue>();
         when(projectIssues.issues()).thenReturn(issues);
 
-        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, issuePathResolver);
+        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, stashDiffReport, issuePathResolver);
         assertEquals(0, report.size());
     }
 
@@ -151,7 +156,10 @@ public class SonarQubeCollectorTest {
         issues.add(issue2);
         when(projectIssues.issues()).thenReturn(issues);
 
-        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, issuePathResolver);
+        when(stashDiffReport.hasPath("project/path1")).thenReturn(true);
+        when(stashDiffReport.hasPath("project/path2")).thenReturn(true);
+
+        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, stashDiffReport, issuePathResolver);
         assertEquals(2, report.size());
         assertEquals(1, countIssuesBySeverity(report, "severity1"));
         assertEquals(1, countIssuesBySeverity(report, "severity2"));
@@ -169,6 +177,17 @@ public class SonarQubeCollectorTest {
     }
 
     @Test
+    public void testExtractIssueReportNotInDiff() {
+        ArrayList<Issue> issues = new ArrayList<Issue>();
+        issues.add(issue1);
+        issues.add(issue2);
+        when(projectIssues.issues()).thenReturn(issues);
+
+        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, stashDiffReport, issuePathResolver);
+        assertTrue(report.isEmpty());
+    }
+
+    @Test
     public void testExtractIssueReportWithNoLine() {
         when(issue1.line()).thenReturn(null);
 
@@ -176,7 +195,9 @@ public class SonarQubeCollectorTest {
         issues.add(issue1);
         when(projectIssues.issues()).thenReturn(issues);
 
-        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, issuePathResolver);
+        when(stashDiffReport.hasPath("project/path1")).thenReturn(true);
+
+        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, stashDiffReport, issuePathResolver);
         assertEquals(1, report.size());
         assertEquals(1, countIssuesBySeverity(report, "severity1"));
         assertEquals(0, countIssuesBySeverity(report, "severity2"));
@@ -197,7 +218,9 @@ public class SonarQubeCollectorTest {
         issues.add(issue2);
         when(projectIssues.issues()).thenReturn(issues);
 
-        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, issuePathResolver);
+        when(stashDiffReport.hasPath("project/path2")).thenReturn(true);
+
+        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, stashDiffReport, issuePathResolver);
         assertEquals(1, report.size());
         assertEquals(0, countIssuesBySeverity(report, "severity1"));
         assertEquals(1, countIssuesBySeverity(report, "severity2"));
@@ -213,7 +236,10 @@ public class SonarQubeCollectorTest {
         issues.add(issue2);
         when(projectIssues.issues()).thenReturn(issues);
 
-        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, issuePathResolver);
+        when(stashDiffReport.hasPath("project/path1")).thenReturn(true);
+        when(stashDiffReport.hasPath("project/path2")).thenReturn(true);
+
+        List<Issue> report = SonarQubeCollector.extractIssueReport(projectIssues, stashDiffReport, issuePathResolver);
         assertEquals(1, report.size());
         assertEquals(0, countIssuesBySeverity(report, "severity1"));
         assertEquals(1, countIssuesBySeverity(report, "severity2"));

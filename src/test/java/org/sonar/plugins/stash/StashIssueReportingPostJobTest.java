@@ -1,5 +1,6 @@
 package org.sonar.plugins.stash;
 
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -81,7 +82,7 @@ public class StashIssueReportingPostJobTest extends StashTest {
         when(config.includeAnalysisOverview()).thenReturn(Boolean.TRUE);
 
         when(report.size()).thenReturn(10);
-        when(stashRequestFacade.extractIssueReport(projectIssues)).thenReturn(report);
+        when(stashRequestFacade.extractIssueReport(eq(projectIssues), anyObject())).thenReturn(report);
 
         when(coverageProjectStore.getProjectCoverage()).thenReturn(20.0);
         when(coverageProjectStore.getPreviousProjectCoverage()).thenReturn(10.0);
@@ -122,7 +123,7 @@ public class StashIssueReportingPostJobTest extends StashTest {
 
         List<Issue> report = spy(new ArrayList<Issue>());
         when(report.size()).thenReturn(55);
-        when(stashRequestFacade.extractIssueReport(projectIssues)).thenReturn(report);
+        when(stashRequestFacade.extractIssueReport(eq(projectIssues), anyObject())).thenReturn(report);
 
         myJob = new StashIssueReportingPostJob(config, projectIssues, stashRequestFacade);
         myJob.executeOn(project, context);
