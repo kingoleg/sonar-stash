@@ -44,9 +44,9 @@ public class SonarQube {
         }
         String binary;
         if (os.equals("windows")) {
-            binary =  "sonar.bat";
+            binary = "sonar.bat";
         } else {
-            binary =  "sonar.sh";
+            binary = "sonar.sh";
         }
 
         File exec = installDir.resolve("bin").resolve(os + "-" + arch).resolve(binary).toFile();
@@ -77,19 +77,14 @@ public class SonarQube {
 
     public void startAsync() throws Exception {
         writeConfig();
-        process = new ProcessBuilder(this.getExecutable().toString(), "start")
-                .directory(installDir.toFile())
-                .inheritIO()
-                .start();
+        process = new ProcessBuilder(this.getExecutable().toString(), "start").directory(installDir.toFile()).inheritIO().start();
         if (process.waitFor() != 0) {
             throw new Exception();
         }
     }
 
     public void stop() throws Exception {
-        new ProcessBuilder(this.getExecutable().toString(), "stop")
-                .directory(installDir.toFile())
-                .start().waitFor();
+        new ProcessBuilder(this.getExecutable().toString(), "stop").directory(installDir.toFile()).start().waitFor();
     }
 
     public void installPlugin(File sourceArchive) throws IOException {
@@ -132,12 +127,8 @@ public class SonarQube {
     }
 
     public boolean createProject(String key, String name) throws IOException {
-        URL url = new URL(getUrl(),
-                "/api/projects/create?"
-                + "key=" + URLEncoder.encode(key, "UTF-8")
-                + "&"
-                + "name=" + URLEncoder.encode(key, "UTF-8")
-        );
+        URL url = new URL(getUrl(), "/api/projects/create?" + "key=" + URLEncoder.encode(key, "UTF-8") + "&" + "name="
+                + URLEncoder.encode(key, "UTF-8"));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.connect();

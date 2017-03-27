@@ -15,7 +15,8 @@ public class InputFileCacheSensor implements Sensor, BatchComponent {
     private final InputFileCache inputFileCache;
     private final FileSystem fileSystem;
 
-    public InputFileCacheSensor(StashPluginConfiguration stashPluginConfiguration, InputFileCache inputFileCache, FileSystem fileSystem) {
+    public InputFileCacheSensor(StashPluginConfiguration stashPluginConfiguration, InputFileCache inputFileCache,
+            FileSystem fileSystem) {
         this.stashPluginConfiguration = stashPluginConfiguration;
         this.inputFileCache = inputFileCache;
         this.fileSystem = fileSystem;

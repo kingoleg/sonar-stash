@@ -38,7 +38,8 @@ public final class MarkdownPrinter {
     StringBuilder sb = new StringBuilder();
     sb.append(printSeverityMarkdown(issue.severity())).append(issue.message()).append(" [[").append("file").append("]")
         .append("(").append(stashURL).append("/projects/").append(stashProject).append("/repos/").append(stashRepo)
-        .append("/pull-requests/").append(pullRequestId).append("/diff#").append(issuePathResolver.getIssuePath(issue)).append(")]");
+                .append("/pull-requests/").append(pullRequestId).append("/diff#").append(issuePathResolver.getIssuePath(issue))
+                .append(")]");
 
     return sb.toString();
   }

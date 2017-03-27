@@ -54,39 +54,29 @@ public class CompleteITCase {
     public void basicTest() throws Exception {
         String jsonUser = "{\"name\":\"SonarQube\", \"email\":\"sq@email.com\", \"id\":1, \"slug\":\"sonarqube\"}";
         String jsonPullRequest = DiffReportSample.baseReport;
-        wireMock.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo(
-                        urlPath("rest", "api", "1.0", "users", stashUser)))
-                        .willReturn(aJsonResponse()
-                                .withBody(jsonUser)
-                        )
-        );
-        wireMock.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo(
+        wireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo(urlPath("rest", "api", "1.0", "users", stashUser)))
+                .willReturn(aJsonResponse().withBody(jsonUser)));
+        wireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo(
                         repoPath(stashProject, stashRepo, "pull-requests", String.valueOf(stashPullRequest), "diff")))
-                        .withQueryParam("withComments", WireMock.equalTo(String.valueOf(true)))
-                        .willReturn(aJsonResponse()
-                                .withBody(jsonPullRequest)
-                        )
-        );
-        wireMock.stubFor(
-                WireMock.post(WireMock.urlPathEqualTo(
+                .withQueryParam("withComments", WireMock.equalTo(String.valueOf(true)))
+                .willReturn(aJsonResponse().withBody(jsonPullRequest)));
+        wireMock.stubFor(WireMock.post(WireMock.urlPathEqualTo(
                         repoPath(stashProject, stashRepo, "pull-requests", String.valueOf(stashPullRequest), "comments")))
-                        .withRequestBody(WireMock.equalToJson("{\"text\":\"## SonarQube analysis Overview\\n### No new issues detected!\\n\\n\"}"))
-                        .willReturn(aJsonResponse()
-                                .withStatus(201)
-                                .withBody("{}")
-                        )
-        );
+                .withRequestBody(
+                        WireMock.equalToJson("{\"text\":\"## SonarQube analysis Overview\\n### No new issues detected!\\n\\n\"}"))
+                .willReturn(aJsonResponse().withStatus(201).withBody("{}")));
 
         scan();
         wireMock.verify(WireMock.getRequestedFor(WireMock.urlPathMatching(".*" + stashUser + "$")));
         wireMock.verify(WireMock.getRequestedFor(WireMock.urlPathMatching(".*diff$")));
         wireMock.verify(WireMock.postRequestedFor(WireMock.urlPathMatching(".*comments$")));
 
-        // Making sure we find the proper agent info in a string like: User-Agent: SonarQube/4.5.7 Stash/1.2.0 AHC/1.0
-        wireMock.verify(WireMock.getRequestedFor(WireMock.anyUrl()).withHeader("User-Agent", WireMock.matching("^(.*)Stash/[0-9.]+(.*)$")));
-        wireMock.verify(WireMock.getRequestedFor(WireMock.anyUrl()).withHeader("User-Agent", WireMock.matching("^(.*)SonarQube/[0-9.]+(.*)$")));
+        // Making sure we find the proper agent info in a string like:
+        // User-Agent: SonarQube/4.5.7 Stash/1.2.0 AHC/1.0
+        wireMock.verify(WireMock.getRequestedFor(WireMock.anyUrl()).withHeader("User-Agent",
+                WireMock.matching("^(.*)Stash/[0-9.]+(.*)$")));
+        wireMock.verify(WireMock.getRequestedFor(WireMock.anyUrl()).withHeader("User-Agent",
+                WireMock.matching("^(.*)SonarQube/[0-9.]+(.*)$")));
     }
 
     private String repoPath(String project, String repo, String... parts) {
@@ -109,7 +99,7 @@ public class CompleteITCase {
         List<File> sources = new ArrayList<>();
         sources.add(sourcesDir);
         Properties extraProps = new Properties();
-        //extraProps.setProperty("sonar.analysis.mode", "incremental");
+        // extraProps.setProperty("sonar.analysis.mode", "incremental");
         extraProps.setProperty("sonar.stash.url", "http://127.0.0.1:" + wireMock.port());
         extraProps.setProperty("sonar.stash.login", stashUser);
         extraProps.setProperty("sonar.stash.password", stashPassword);

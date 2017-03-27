@@ -8,7 +8,7 @@ import org.sonar.api.batch.bootstrap.ProjectBuilder;
 
 public class StashProjectBuilder extends ProjectBuilder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StashProjectBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StashProjectBuilder.class);
 
   private File workingDir;
 

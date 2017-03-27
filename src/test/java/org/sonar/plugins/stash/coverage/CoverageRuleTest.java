@@ -1,12 +1,12 @@
 package org.sonar.plugins.stash.coverage;
 
-import org.junit.Test;
-
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.sonar.plugins.stash.coverage.CoverageRule.decreasingLineCoverageRule;
 import static org.sonar.plugins.stash.coverage.CoverageRule.isDecreasingLineCoverage;
+
+import org.junit.Test;
 
 public class CoverageRuleTest {
 
@@ -24,6 +24,5 @@ public class CoverageRuleTest {
         assertTrue(isDecreasingLineCoverage("coverageEvolution-neutral:decreasingLineCoverage"));
         assertTrue(isDecreasingLineCoverage("coverageEvolution-java:decreasingLineCoverage"));
     }
-
 
 }

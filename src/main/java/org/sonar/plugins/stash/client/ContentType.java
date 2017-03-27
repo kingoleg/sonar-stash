@@ -21,12 +21,12 @@ public class ContentType {
 
     public boolean match(String s) {
         String[] parts = s.split(";", 2);
-        // we ignore the parameters, match() does not care and we can't have our own
+        // we ignore the parameters, match() does not care and we can't have our
+        // own
         String[] types = StringUtils.strip(parts[0]).split("/", 2);
         if (types.length < 2) {
-            return  false;
+            return false;
         }
-        return  StringUtils.equalsIgnoreCase(primaryType, types[0])
-             && StringUtils.equalsIgnoreCase(subType, types[1]);
+        return StringUtils.equalsIgnoreCase(primaryType, types[0]) && StringUtils.equalsIgnoreCase(subType, types[1]);
     }
 }

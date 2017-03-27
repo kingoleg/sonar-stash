@@ -1,9 +1,5 @@
 package org.sonar.plugins.stash;
 
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -12,6 +8,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.MemoryHandler;
+
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 public class JavaUtilLoggingCaptureRule extends TestWatcher implements TestRule {
     private boolean gobbleOnSuccess;
@@ -57,7 +57,7 @@ public class JavaUtilLoggingCaptureRule extends TestWatcher implements TestRule 
 
     @Override
     protected void starting(Description description) {
-        for (Handler h: logger.getHandlers()) {
+        for (Handler h : logger.getHandlers()) {
             originalHandlers.add(h);
             logger.removeHandler(h);
         }

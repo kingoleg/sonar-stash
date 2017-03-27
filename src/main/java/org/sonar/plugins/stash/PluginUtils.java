@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +15,10 @@ public final class PluginUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginUtils.class);
 
     private static final String ERROR_DETAILS = "Exception detected: {}";
-    private static final String ERROR_STACK   = "Exception stack trace";
+    private static final String ERROR_STACK = "Exception stack trace";
 
-    // Hiding implicit public constructor with an explicit private one (squid:S1118)
+    // Hiding implicit public constructor with an explicit private one
+    // (squid:S1118)
     private PluginUtils() {
     }
 

@@ -1,10 +1,10 @@
 package org.sonar.plugins.stash.issue;
 
-import org.apache.commons.lang3.StringUtils;
-import org.sonar.plugins.stash.StashPlugin;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.sonar.plugins.stash.StashPlugin;
 
 /**
  * This class is a representation of the Stash Diff view.
@@ -35,7 +35,7 @@ public class StashDiffReport {
     }
   }
   
-  public String getType(String path, long destination){
+    public String getType(String path, long destination) {
     String result   = null;
     Boolean foundIt = false;
     

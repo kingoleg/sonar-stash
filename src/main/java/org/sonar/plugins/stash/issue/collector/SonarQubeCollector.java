@@ -28,7 +28,7 @@ public final class SonarQubeCollector {
   }
 
   // TODO exclude issue not related to diff
-  private static boolean shouldIncludeIssue(Issue issue, IssuePathResolver issuePathResolver) {
+    private static boolean shouldIncludeIssue(Issue issue, IssuePathResolver issuePathResolver) {
     if (!issue.isNew()){
       LOGGER.debug("Issue {} is not a new issue and so, not added to the report", issue.key());
       return false;

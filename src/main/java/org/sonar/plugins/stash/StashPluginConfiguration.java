@@ -8,81 +8,81 @@ import org.sonar.api.config.Settings;
 @InstantiationStrategy(InstantiationStrategy.PER_BATCH)
 public class StashPluginConfiguration implements BatchComponent {
 
-  private Settings settings;
+    private Settings settings;
 
-  public StashPluginConfiguration(Settings settings) {
-    this.settings = settings;
-  }
+    public StashPluginConfiguration(Settings settings) {
+        this.settings = settings;
+    }
 
-  public boolean hasToNotifyStash() {
-    return settings.getBoolean(StashPlugin.STASH_NOTIFICATION);
-  }
+    public boolean hasToNotifyStash() {
+        return settings.getBoolean(StashPlugin.STASH_NOTIFICATION);
+    }
 
-  public String getStashProject() {
-    return settings.getString(StashPlugin.STASH_PROJECT);
-  }
+    public String getStashProject() {
+        return settings.getString(StashPlugin.STASH_PROJECT);
+    }
 
-  public String getStashRepository() {
-    return settings.getString(StashPlugin.STASH_REPOSITORY);
-  }
+    public String getStashRepository() {
+        return settings.getString(StashPlugin.STASH_REPOSITORY);
+    }
 
-  public Integer getPullRequestId() {
-    return settings.getInt(StashPlugin.STASH_PULL_REQUEST_ID);
-  }
+    public Integer getPullRequestId() {
+        return settings.getInt(StashPlugin.STASH_PULL_REQUEST_ID);
+    }
 
-  public String getStashURL() {
-    return settings.getString(StashPlugin.STASH_URL);
-  }
+    public String getStashURL() {
+        return settings.getString(StashPlugin.STASH_URL);
+    }
 
-  public String getStashLogin() {
-    return settings.getString(StashPlugin.STASH_LOGIN);
-  }
+    public String getStashLogin() {
+        return settings.getString(StashPlugin.STASH_LOGIN);
+    }
 
-  public String getStashPassword() {
-    return settings.getString(StashPlugin.STASH_PASSWORD);
-  }
+    public String getStashPassword() {
+        return settings.getString(StashPlugin.STASH_PASSWORD);
+    }
 
-  public String getStashPasswordEnvironmentVariable() {
-    return settings.getString(StashPlugin.STASH_PASSWORD_ENVIRONMENT_VARIABLE);
-  }
+    public String getStashPasswordEnvironmentVariable() {
+        return settings.getString(StashPlugin.STASH_PASSWORD_ENVIRONMENT_VARIABLE);
+    }
 
-  public String getSonarQubeURL() {
-    return settings.getString(StashPlugin.SONARQUBE_URL);
-  }
+    public String getSonarQubeURL() {
+        return settings.getString(StashPlugin.SONARQUBE_URL);
+    }
 
-  public String getSonarQubeLogin() {
-    return settings.getString(CoreProperties.LOGIN);
-  }
+    public String getSonarQubeLogin() {
+        return settings.getString(CoreProperties.LOGIN);
+    }
 
-  public String getSonarQubePassword() {
-    return settings.getString(CoreProperties.PASSWORD);
-  }
+    public String getSonarQubePassword() {
+        return settings.getString(CoreProperties.PASSWORD);
+    }
 
-  public int getIssueThreshold() {
-    return settings.getInt(StashPlugin.STASH_ISSUE_THRESHOLD);
-  }
-  
-  public int getStashTimeout() {
-    return settings.getInt(StashPlugin.STASH_TIMEOUT);
-  }
-  
-  public boolean canApprovePullRequest() {
-    return settings.getBoolean(StashPlugin.STASH_REVIEWER_APPROVAL);
-  }
-  
-  public boolean resetComments() {
-    return settings.getBoolean(StashPlugin.STASH_RESET_COMMENTS);
-  }
+    public int getIssueThreshold() {
+        return settings.getInt(StashPlugin.STASH_ISSUE_THRESHOLD);
+    }
 
-  public String getTaskIssueSeverityThreshold() {
-    return settings.getString(StashPlugin.STASH_TASK_SEVERITY_THRESHOLD);
-  }
+    public int getStashTimeout() {
+        return settings.getInt(StashPlugin.STASH_TIMEOUT);
+    }
 
-  public String getSonarQubeVersion() {
-    return settings.getString(CoreProperties.SERVER_VERSION);
-  }
+    public boolean canApprovePullRequest() {
+        return settings.getBoolean(StashPlugin.STASH_REVIEWER_APPROVAL);
+    }
 
-  public boolean includeAnalysisOverview() {
-    return settings.getBoolean(StashPlugin.STASH_INCLUDE_ANALYSIS_OVERVIEW);
-  }
+    public boolean resetComments() {
+        return settings.getBoolean(StashPlugin.STASH_RESET_COMMENTS);
+    }
+
+    public String getTaskIssueSeverityThreshold() {
+        return settings.getString(StashPlugin.STASH_TASK_SEVERITY_THRESHOLD);
+    }
+
+    public String getSonarQubeVersion() {
+        return settings.getString(CoreProperties.SERVER_VERSION);
+    }
+
+    public boolean includeAnalysisOverview() {
+        return settings.getBoolean(StashPlugin.STASH_INCLUDE_ANALYSIS_OVERVIEW);
+    }
 }

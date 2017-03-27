@@ -17,7 +17,7 @@ import org.sonar.wsclient.Sonar;
 
 @InstantiationStrategy(InstantiationStrategy.PER_BATCH)
 public class CoverageProjectStore implements BatchComponent, Sensor {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CoverageUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CoverageUtils.class);
 
 	private Double previousProjectCoverage = 0d;
     private int linesToCover = 0;

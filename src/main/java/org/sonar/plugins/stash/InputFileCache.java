@@ -15,31 +15,31 @@ import org.sonar.api.batch.fs.InputFile;
 @InstantiationStrategy(InstantiationStrategy.PER_BATCH)
 public class InputFileCache implements BatchComponent {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(InputFileCache.class);
-	
-  private final Map<String, InputFile> inputFileByKey = new HashMap<>();
-  
-  public InputFileCache() {
-	  LOGGER.debug("New InputFileCache created");
-  }
-  
-  // For debug purpose
-  public Map<String, InputFile> getInputFileByKeyMap() {
-	  return Collections.unmodifiableMap(inputFileByKey);
-  }
-  
-  public void putInputFile(String componentKey, InputFile inputFile) {
-    inputFileByKey.put(componentKey, inputFile);
-  }
+    private static final Logger LOGGER = LoggerFactory.getLogger(InputFileCache.class);
 
-  @CheckForNull
-  public InputFile getInputFile(String componentKey) {
-    return inputFileByKey.get(componentKey);
-  }
+    private final Map<String, InputFile> inputFileByKey = new HashMap<>();
 
-  @Override
-  public String toString() {
-    return "Stash Plugin InputFile Cache";
-  }
+    public InputFileCache() {
+        LOGGER.debug("New InputFileCache created");
+    }
+
+    // For debug purpose
+    public Map<String, InputFile> getInputFileByKeyMap() {
+        return Collections.unmodifiableMap(inputFileByKey);
+    }
+
+    public void putInputFile(String componentKey, InputFile inputFile) {
+        inputFileByKey.put(componentKey, inputFile);
+    }
+
+    @CheckForNull
+    public InputFile getInputFile(String componentKey) {
+        return inputFileByKey.get(componentKey);
+    }
+
+    @Override
+    public String toString() {
+        return "Stash Plugin InputFile Cache";
+    }
 
 }

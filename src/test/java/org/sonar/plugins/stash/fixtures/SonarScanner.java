@@ -27,10 +27,9 @@ public class SonarScanner {
         cli.add("-D" + name + "=" + value);
     }
 
-    public void scan(SonarQube sonarqube, File baseDir, List<File> sources, String projectKey, String projectName, String projectVersion, Properties properties) throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder(getBinary("sonar-scanner").toString())
-                .directory(installDir.toFile())
-                .inheritIO();
+    public void scan(SonarQube sonarqube, File baseDir, List<File> sources, String projectKey, String projectName,
+            String projectVersion, Properties properties) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder(getBinary("sonar-scanner").toString()).directory(installDir.toFile()).inheritIO();
         List<String> command = pb.command();
         addCliProperty(command, "sonar.host.url", sonarqube.getUrl());
         addCliProperty(command, "sonar.sources", Joiner.on(',').join(sources));
