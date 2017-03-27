@@ -1,6 +1,9 @@
 package org.sonar.plugins.stash.issue;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -88,6 +91,22 @@ public class StashDiffReportTest {
     public void testGetTypeWithNoDestination() {
         assertEquals(report1.getType("path/to/diff1", 0), StashPlugin.CONTEXT_ISSUE_TYPE);
         assertEquals(report1.getType("path/to/diff", 0), null);
+    }
+
+    @Test
+    public void testHasPath() {
+        assertEquals(report1.hasPath("path/to/diff1"), true);
+        assertEquals(report1.hasPath("path/to/diff2"), true);
+        assertEquals(report1.hasPath("path/to/diff3"), true);
+        assertEquals(report1.hasPath("path/to/diff4"), false);
+    }
+
+    @Test
+    public void testGetDiff() {
+        assertThat(report1.getDiff("path/to/diff1"), contains(diff1));
+        assertThat(report1.getDiff("path/to/diff2"), contains(diff2));
+        assertThat(report1.getDiff("path/to/diff3"), contains(diff3));
+        assertThat(report1.getDiff("path/to/diff4"), empty());
     }
 
     @Test

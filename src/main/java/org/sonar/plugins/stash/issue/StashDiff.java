@@ -53,4 +53,10 @@ public class StashDiff {
     public boolean containsComment(long commentId) {
         return comments.stream().anyMatch(c -> c.getId() == commentId);
     }
+
+    @Override
+    public String toString() {
+        return "StashDiff [type=" + type + ", path=" + path + ", source=" + source + ", destination=" + destination
+                + ", comments=" + comments + "]";
+    }
 }

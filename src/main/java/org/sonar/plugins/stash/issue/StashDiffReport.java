@@ -2,6 +2,7 @@ package org.sonar.plugins.stash.issue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.sonar.plugins.stash.StashPlugin;
@@ -36,8 +37,16 @@ public class StashDiffReport {
         }
     }
 
+    public List<StashDiff> getDiff(String path) {
+        return diffs.stream().filter(p -> p.getPath().equals(path)).collect(Collectors.toList());
+    }
+
+    public boolean hasPath(String path) {
+        return !getDiff(path).isEmpty();
+    }
+
     public String getType(String path, long destination) {
-        for (StashDiff diff : diffs) {
+        for (StashDiff diff : getDiff(path)) {
             // Line 0 never belongs to Stash Diff view.
             // It is a global comment with a type set to CONTEXT.
             if (StringUtils.equals(diff.getPath(), path) && destination == 0) {
