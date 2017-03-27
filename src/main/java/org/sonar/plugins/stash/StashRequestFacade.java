@@ -420,10 +420,19 @@ public class StashRequestFacade implements BatchComponent, IssuePathResolver {
   public String getIssuePath(Issue issue) {
     InputFile inputFile = inputFileCache.getInputFile(issue.componentKey());
     if (inputFile == null){
+      LOGGER.debug("Cannot file inputFile for issueKey {} by key {}", issue, issue.componentKey());
+      LOGGER.debug("Cache is {}", inputFileCache.getInputFileByKeyMap());
       return null;
     }
 
     String resolvedRelativePath = pathResolver.relativePath(workingDir, inputFile.file());
+
+    LOGGER.debug("InputFile = {}", inputFile);
+    LOGGER.debug("Project working dir = {}", workingDir);
+    LOGGER.debug("inputFile.file() = {}", inputFile.file());
+    LOGGER.debug("inputFile.absolutePath() = {}", inputFile.absolutePath());
+    LOGGER.debug("inputFile.relativePath() = {}", inputFile.relativePath());
+    LOGGER.debug("Resolved path = {}", resolvedRelativePath);
     
 	return resolvedRelativePath;
   }
