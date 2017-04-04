@@ -33,7 +33,10 @@ public final class SonarQubeCollector {
     // TODO exclude issue not related to diff
     private static boolean shouldIncludeIssue(Issue issue, IssuePathResolver issuePathResolver, StashDiffReport diffReport) {
         if (!issue.isNew()) {
-            LOGGER.debug("Issue {} is not a new issue and so, not added to the report", issue.key());
+            LOGGER.debug(
+                    "Issue {} is not a new issue and so, not added to the report, issue.componentKey = {}, issue.actionPlanKey = {}, issue.key = {}, issue.ruleKey = {}, issue.message = {}, issue.line = {}, issue.resolution = {}, issue.attributes = {}",
+                    issue, issue.componentKey(), issue.actionPlanKey(), issue.key(), issue.ruleKey(), issue.message(),
+                    issue.line(), issue.resolution(), issue.attributes());
             return false;
         }
 
@@ -53,6 +56,11 @@ public final class SonarQubeCollector {
                     issue.line(), issue.resolution(), issue.attributes());
             return false;
         }
+
+        LOGGER.debug(
+                "Issue {} is added to the report, issue.componentKey = {}, issue.actionPlanKey = {}, issue.key = {}, issue.ruleKey = {}, issue.message = {}, issue.line = {}, issue.resolution = {}, issue.attributes = {}",
+                issue, issue.componentKey(), issue.actionPlanKey(), issue.key(), issue.ruleKey(), issue.message(), issue.line(),
+                issue.resolution(), issue.attributes());
         return true;
     }
 }
