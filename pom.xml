@@ -8,7 +8,7 @@
   <description>Integration between Atlassian Stash (BitBucket) and SonarQube</description>
   <name>Stash</name>
   <url>https://github.com/AmadeusITGroup/sonar-stash</url>
-  
+
   <licenses>
     <license>
       <name>MIT</name>
@@ -31,6 +31,10 @@
     <system>Travis</system>
     <url>https://travis-ci.org/AmadeusITGroup/sonar-stash</url>
   </ciManagement>
+
+  <prerequisites>
+    <maven>3.0.5</maven>
+  </prerequisites>
 
   <properties>
     <sonar.version>4.5.4</sonar.version>
@@ -162,7 +166,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.6.1</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
@@ -171,7 +175,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.7</version>
+        <version>3.0.2</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -291,7 +295,7 @@
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.7.2.201409121644</version>
+            <version>0.7.9</version>
             <executions>
               <execution>
                 <id>prepare-agent</id>
