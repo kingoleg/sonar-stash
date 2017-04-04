@@ -30,7 +30,6 @@ public final class SonarQubeCollector {
                 .filter(issue -> shouldIncludeIssue(issue, issuePathResolver, diffReport)).collect(Collectors.toList());
     }
 
-    // TODO exclude issue not related to diff
     private static boolean shouldIncludeIssue(Issue issue, IssuePathResolver issuePathResolver, StashDiffReport diffReport) {
         if (!issue.isNew()) {
             LOGGER.debug(
