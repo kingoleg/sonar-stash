@@ -19,6 +19,10 @@ public final class CoverageUtils {
             return 100;
         }
 
+        if (uncoveredLines > linesToCover) {
+            return 0;
+        }
+
 		return (1 - (double) uncoveredLines / linesToCover) * 100;
     }
 
