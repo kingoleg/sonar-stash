@@ -110,22 +110,34 @@ public class CoverageSensor implements Sensor, BatchComponent {
     }
 
     private boolean shouldAddIssue(InputFile.Status status, double previousCoverage, double coverage) {
-        boolean isAddedWithoutTests = previousCoverage == 0 && status == InputFile.Status.ADDED;
+        boolean isAddedWithoutTests = coverage == 0 && status == InputFile.Status.ADDED;
         if (isAddedWithoutTests) {
             LOGGER.debug("File is added without tests");
             return true;
         }
-        if (roundedPercentageGreaterThan(previousCoverage, coverage)) {
-            LOGGER.debug("Previous coverage is better then current");
-            return true;
+
+        boolean isAddedWithoutCoverageThresholdTests = roundedPercentageGreaterThan(COVERAGE_THRESHOLD, coverage)
+                && status == InputFile.Status.ADDED;
+        if (isAddedWithoutCoverageThresholdTests) {
+            LOGGER.debug("File is added without necessary tests coverage threshold {}, coverage {}", COVERAGE_THRESHOLD,
+                    coverage);
+            // TODO return true, Add issue about not necessary test coverage
+            // return true;
         }
 
         if (roundedPercentageGreaterThan(coverage, COVERAGE_THRESHOLD)) {
-            LOGGER.debug("Current coverage {} is more then {}%", coverage, COVERAGE_THRESHOLD);
+            LOGGER.debug("Current coverage {} is more then threshold {}", coverage, COVERAGE_THRESHOLD);
+            // TODO return false, Should not force the last coverage mile
+            // return false;
+        }
+
+        if (roundedPercentageGreaterThan(previousCoverage, coverage)) {
+            LOGGER.debug("Coverage is lowered from {} to {}", previousCoverage, coverage);
             return true;
         }
 
-        LOGGER.debug("Coverage is not OK");
+        LOGGER.debug("Current coverage {} is OK, previous coverage {}, threshold {}, ", coverage, previousCoverage,
+                COVERAGE_THRESHOLD);
         return false;
     }
 
