@@ -361,12 +361,12 @@ public class StashRequestFacade implements BatchComponent, IssuePathResolver {
      * Reset all comments linked to a pull-request.
      */
     public void resetComments(PullRequestRef pr, StashDiffReport diffReport, StashUser sonarUser, StashClient stashClient) {
-        try {
-            for (StashComment comment : diffReport.getComments()) {
-
+        for (StashComment comment : diffReport.getComments()) {
+            try {
                 if (sonarUser.getId() != comment.getAuthor().getId()) {
                     continue;
                 }
+
                 if (comment.containsPermanentTasks()) {
                     LOGGER.debug(
                             "Comment \"{}\" (path:\"{}\", line:\"{}\")"
@@ -383,12 +383,13 @@ public class StashRequestFacade implements BatchComponent, IssuePathResolver {
 
                 LOGGER.debug("Remove comment {}", comment);
                 stashClient.deletePullRequestComment(pr, comment);
-            }
 
-            LOGGER.info("SonarQube issues reported to Stash by user \"{}\" have been reset", sonarUser.getName());
-        } catch (StashClientException e) {
-            LOGGER.error("Unable to reset comment list", e);
+            } catch (StashClientException e) {
+                LOGGER.error("Unable to delete comment {}", comment, e);
+            }
         }
+
+        LOGGER.info("SonarQube issues reported to Stash by user \"{}\" have been reset", sonarUser.getName());
     }
 
     /**
