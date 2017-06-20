@@ -69,7 +69,10 @@ public final class StashCollector {
         String path = (String) jsonAnchor.get("path");
 
         // can be null if comment is attached to the global file
-        Long line = jsonAnchor.getLong("line");
+        Long line = null;
+        if (jsonAnchor.get("line") != null) {
+            line = jsonAnchor.getLong("line");
+        }
 
         return extractComment(jsonComment, path, line);
     }
