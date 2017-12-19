@@ -29,15 +29,26 @@ public final class SonarQubeCollector {
 
   private static boolean shouldIncludeIssue(Issue issue, IssuePathResolver issuePathResolver) {
     if (!issue.isNew()){
-      LOGGER.debug("Issue {} is not a new issue and so, not added to the report", issue.key());
+      LOGGER.debug(
+        "Issue {} is not a new issue and so, NOT ADDED to the report, issue.componentKey = {}, issue.actionPlanKey = {}, issue.key = {}, issue.ruleKey = {}, issue.message = {}, issue.line = {}, issue.resolution = {}, issue.attributes = {}",
+        issue, issue.componentKey(), issue.actionPlanKey(), issue.key(), issue.ruleKey(), issue.message(),
+        issue.line(), issue.resolution(), issue.attributes());
       return false;
     }
 
     String path = issuePathResolver.getIssuePath(issue);
     if (path == null) {
-      LOGGER.debug("Issue {} is not linked to a file, not added to the report", issue.key());
+        LOGGER.debug(
+          "Issue {} is not linked to a file, NOT ADDED to the report, issue.componentKey = {}, issue.actionPlanKey = {}, issue.key = {}, issue.ruleKey = {}, issue.message = {}, issue.line = {}, issue.resolution = {}, issue.attributes = {}",
+          issue, issue.componentKey(), issue.actionPlanKey(), issue.key(), issue.ruleKey(), issue.message(),
+          issue.line(), issue.resolution(), issue.attributes());
       return false;
     }
+    
+    LOGGER.debug(
+      "Issue {} is new and linked to a file, ADDED to the report, issue.componentKey = {}, issue.actionPlanKey = {}, issue.key = {}, issue.ruleKey = {}, issue.message = {}, issue.line = {}, issue.resolution = {}, issue.attributes = {}",
+      issue, issue.componentKey(), issue.actionPlanKey(), issue.key(), issue.ruleKey(), issue.message(),
+      issue.line(), issue.resolution(), issue.attributes());
     return true;
   }
 }
